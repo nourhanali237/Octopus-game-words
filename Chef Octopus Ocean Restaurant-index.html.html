@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chef Octopus's Ocean Restaurant</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Amiri:wght@400;700&display=swap">
+<style>
+:root{--sun:#ffd25a;--ink:#1d2a44;--ok:#1fa85f;--bad:#dc3f46;--ui:'Fredoka','Trebuchet MS',system-ui,sans-serif;--ar:'Amiri','Noto Naskh Arabic','Geeza Pro','Traditional Arabic',serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;font-family:var(--ui);color:#fff;background:#062a55;overflow-x:hidden}
+#scene{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.rays polygon{animation:ray 7s ease-in-out infinite alternate}.rays polygon:nth-child(even){animation-delay:-3s}
+@keyframes ray{from{opacity:.35;transform:translateX(-30px)}to{opacity:.8;transform:translateX(30px)}}
+.sw{transform-box:fill-box;transform-origin:50% 100%;animation:swS 5s ease-in-out infinite alternate}
+@keyframes swS{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
+.bgfish{animation:swim linear infinite}
+@keyframes swim{from{transform:translateX(-200px)}to{transform:translateX(1800px)}}
+.caus{animation:caus 9s ease-in-out infinite alternate}
+@keyframes caus{to{transform:translate(80px,30px);opacity:.15}}
+#bubbles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+#bubbles i{position:absolute;bottom:-30px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff9,#ffffff22 60%,#fff3);border:1px solid #fff6;animation:rise linear infinite}
+@keyframes rise{to{transform:translateY(-110vh) translateX(40px)}}
+#game{position:relative;z-index:2;display:flex;flex-direction:column;height:100vh;min-height:660px;padding:8px 16px 10px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.top h1{margin:0;font-size:clamp(16px,2vw,24px);color:var(--sun);text-shadow:0 2px 6px #000a}
+.pill{background:#06284fcc;border:1px solid #ffffff44;border-radius:99px;padding:5px 14px;font-weight:700;white-space:nowrap}
+.prog{flex:1;min-width:140px;height:14px;border-radius:99px;background:#06284fcc;overflow:hidden;border:1px solid #fff5}
+.prog b{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ad4d0,var(--sun));transition:width .5s}
+.ib{background:#06284fcc;border:1px solid #fff5;color:#fff;border-radius:50%;width:40px;height:40px;font-size:18px;cursor:pointer}
+.ib:disabled{opacity:.4}.ib.arm{background:var(--bad)}
+#msg{text-align:center;font-size:clamp(18px,2.2vh + 8px,28px);font-weight:700;min-height:34px;margin:4px 0;text-shadow:0 2px 8px #000b}
+.row{flex:1;min-height:0;display:grid;grid-template-columns:1.3fr 1.1fr 1fr;gap:10px;align-items:end}
+#custWrap,#potWrap{min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px}
+#bubble{position:relative;background:#fffffff2;color:var(--ink);border-radius:30px;padding:14px 22px 20px;text-align:center;width:100%;max-width:100%;min-height:min(28vh,260px);display:flex;flex-direction:column;justify-content:center;gap:10px;box-shadow:0 8px 24px #0006}
+#bubble::after{content:"";position:absolute;bottom:-13px;left:50%;margin-left:-13px;border:13px solid transparent;border-top-color:#fffffff2;border-bottom:0}
+#bubble small{display:block;font-size:14px;color:#5a6785;margin-bottom:4px}
+#word{font-family:var(--ar);font-size:clamp(56px,min(12vh,7vw),122px);line-height:2;padding-top:.22em;direction:rtl;unicode-bidi:isolate;font-weight:700;white-space:nowrap;overflow:visible}
+#cust{height:min(19vh,150px);filter:drop-shadow(0 10px 10px #0006);animation:bob 4s ease-in-out infinite}
+#cust svg{height:100%;width:auto}
+#cust.happy{animation:hop .5s 4}
+@keyframes hop{50%{transform:translateY(-24px) rotate(6deg)}}
+@keyframes bob{50%{transform:translateY(-8px)}}
+#cust.arrive{animation:arr .8s}
+@keyframes arr{from{transform:translateX(-140px);opacity:0}}
+#octoBox{display:flex;justify-content:center;align-items:flex-end;min-height:0;filter:drop-shadow(0 14px 14px #0007)}
+#octo,#octo2{height:min(40vh,340px);width:auto;overflow:visible}
+.arm{animation:sway 2.6s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+.dance{animation:dance .5s ease-in-out infinite}.dance .arm{animation-duration:.4s}
+@keyframes dance{50%{transform:translateY(-14px) rotate(3deg)}}
+.shake{animation:shk .4s}@keyframes shk{25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+.eye{transform-box:fill-box;transform-origin:center;transition:transform .2s}.oh .eye{transform:scale(1.25)}
+.pup{animation:look 5s infinite}@keyframes look{50%{transform:translateX(3px)}}
+.brow{opacity:0;transition:opacity .2s}
+.tear{opacity:0}
+#octo.sad{filter:saturate(.55) brightness(.92)}
+#octo.sad .brow{opacity:1}
+#octo.sad .tear{opacity:1;animation:tear 1s ease-in infinite}
+#octo.sad .arm{animation-duration:6s}
+@keyframes tear{from{transform:translateY(0);opacity:1}to{transform:translateY(26px);opacity:0}}
+#asm{min-height:92px;width:100%;background:#06284f88;border:2px dashed #fff8;border-radius:20px;display:flex;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(3px)}
+#asmWord{font-family:var(--ar);font-size:clamp(44px,7vh,72px);direction:rtl;unicode-bidi:isolate;line-height:1.5;text-shadow:0 3px 6px #000a}
+#slots{font-size:22px;letter-spacing:4px;color:#fffb}
+#pot{width:min(100%,230px);height:auto;transition:filter .3s;filter:drop-shadow(0 8px 8px #0008)}
+#pot.glow{filter:drop-shadow(0 0 16px #ffd25a) drop-shadow(0 0 34px #2ad4d0)}
+#dish{position:absolute;font-size:64px;opacity:0;pointer-events:none;z-index:6}
+.steam{position:absolute;font-size:42px;pointer-events:none;z-index:6;animation:puff 1s forwards}
+@keyframes puff{to{opacity:0;transform:translateY(-60px) scale(1.8)}}
+.shelf{margin-top:12px;padding:20px 14px 12px;border-radius:20px 20px 12px 12px;background:linear-gradient(#8a6a4a,#5a4030);border-top:8px solid #b79868;box-shadow:0 10px 24px #0009,inset 0 4px 0 #ffffff22}
+#jars{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+.jar{position:relative;width:88px;height:98px;border:3px solid #ffffffaa;border-radius:12px 12px 24px 24px;font-family:var(--ar);font-size:50px;font-weight:700;color:var(--ink);cursor:pointer;line-height:1.5;padding:0;overflow:visible;box-shadow:inset 0 -16px 20px #0003,inset 8px 0 12px #fff6,0 6px 0 #0004;animation:jb 3.2s ease-in-out infinite}
+.jar:nth-child(even){animation-delay:-1.5s}
+@keyframes jb{50%{transform:translateY(-4px)}}
+.jar::before{content:"";position:absolute;top:-15px;left:14px;right:14px;height:13px;background:linear-gradient(#d9b27a,#a67c4a);border-radius:5px 5px 0 0}
+.jar::after{content:"";position:absolute;top:8px;left:7px;width:9px;height:55%;background:#fff8;border-radius:6px}
+.jar span{display:block;direction:rtl;unicode-bidi:isolate;margin-top:8px}
+.jar.sel{box-shadow:0 0 0 6px var(--sun),0 0 30px var(--sun)}
+.jar.wob{animation:wob .45s}@keyframes wob{25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.locked .jar{filter:grayscale(.75) brightness(.75);cursor:not-allowed}
+.dock{display:flex;gap:14px;justify-content:center;margin-top:12px}
+.btn{font-family:var(--ui);font-weight:700;border:0;border-radius:20px;color:#fff;cursor:pointer;box-shadow:0 6px 0 #0006;transition:transform .1s;font-size:clamp(20px,3vh,28px);padding:14px 30px;min-width:200px}
+.btn:active:not(:disabled){transform:translateY(5px);box-shadow:0 1px 0 #0006}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn:focus-visible,.jar:focus-visible,.ib:focus-visible{outline:4px solid #fff}
+.g{background:var(--ok)}.r{background:var(--bad)}.b{background:#2f7be5}
+.btn.attn{animation:pulse 1.2s infinite}@keyframes pulse{50%{transform:scale(1.07)}}
+#armLayer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;overflow:visible}
+.fly{position:absolute;z-index:6;font-family:var(--ar);font-size:48px;font-weight:700;color:var(--ink);background:#fff;border-radius:12px;width:58px;height:64px;display:flex;align-items:center;justify-content:center;pointer-events:none;line-height:1.5;box-shadow:0 4px 12px #0006}
+.bub{position:absolute;border-radius:50%;border:2px solid #fff;pointer-events:none;z-index:6;animation:bu 1s forwards}
+@keyframes bu{to{transform:translateY(-90px);opacity:0}}
+.overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;background:radial-gradient(circle at 50% 35%,#0b6aa388,#04204af0)}
+.overlay h1{font-size:clamp(28px,5vw,58px);margin:6px 0;color:var(--sun);text-shadow:0 4px 12px #000a}
+.overlay p{font-size:clamp(18px,2.4vw,28px);margin:6px 0 18px}
+.big{font-size:clamp(24px,3vw,36px);padding:18px 46px;border-radius:30px;animation:pulse 1.4s infinite}
+.hidden{display:none!important}
+.conf{position:fixed;top:-20px;width:12px;height:16px;z-index:25;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+#finalCust{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:900px}
+#finalCust svg{width:78px;height:60px;animation:hop .7s infinite}
+#finalStats{display:grid;grid-template-columns:repeat(3,auto);gap:6px 24px;font-size:18px;margin-bottom:14px}
+@media(max-width:1000px){.row{grid-template-columns:1fr}#game{height:auto}.dock .btn{min-width:130px;padding:12px 16px}#word{font-size:clamp(52px,14vw,100px)}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
+</style>
+</head>
+<body>
+<svg id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+ <defs>
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fd0ee"/><stop offset=".22" stop-color="#1f93c8"/><stop offset=".6" stop-color="#0b5a99"/><stop offset="1" stop-color="#051f45"/></linearGradient>
+  <linearGradient id="ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <linearGradient id="sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6c88a"/><stop offset="1" stop-color="#9c7640"/></linearGradient>
+  <radialGradient id="vig" cx=".5" cy=".45" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="22"/></filter>
+  <filter id="blur2"><feGaussianBlur stdDeviation="3"/></filter>
+ </defs>
+ <rect width="1600" height="900" fill="url(#water)"/>
+ <g class="rays" fill="url(#ray)" filter="url(#blur2)"><polygon points="200,0 330,0 700,900 440,900"/><polygon points="520,0 600,0 1000,900 800,900"/><polygon points="860,0 990,0 1300,900 1030,900"/><polygon points="1180,0 1260,0 1600,900 1420,900"/></g>
+ <g fill="#fff" opacity=".28" filter="url(#blur)"><ellipse class="caus" cx="300" cy="120" rx="160" ry="40"/><ellipse class="caus" cx="900" cy="80" rx="220" ry="46" style="animation-delay:-4s"/><ellipse class="caus" cx="1350" cy="150" rx="150" ry="36" style="animation-delay:-2s"/></g>
+ <g id="farReef" opacity=".4" fill="#0a4a73"><path d="M0 760 Q80 640 160 740 T320 720 Q380 620 460 740 T700 750 Q760 650 840 750 T1100 740 Q1180 630 1260 745 T1600 730 V900 H0Z"/></g>
+ <g id="bgfish" fill="#0a3e66" opacity=".5"><g class="bgfish" style="animation-duration:38s"><path transform="translate(0 260)" d="M0 0 q30 -18 60 0 q-30 18 -60 0 M60 0 l20 -12 v24z"/></g><g class="bgfish" style="animation-duration:52s;animation-delay:-20s"><path transform="translate(0 420) scale(.8)" d="M0 0 q30 -18 60 0 q-30 18 -60 0 M60 0 l20 -12 v24z"/></g><g class="bgfish" style="animation-duration:46s;animation-delay:-8s"><path transform="translate(0 160) scale(.6)" d="M0 0 q30 -18 60 0 q-30 18 -60 0 M60 0 l20 -12 v24z"/></g></g>
+ <g id="reef"></g>
+ <path d="M0 835 Q300 800 640 828 T1280 815 T1600 830 V900 H0Z" fill="url(#sand)"/>
+ <path d="M0 860 Q400 845 800 858 T1600 850" stroke="#8a6a38" stroke-width="3" fill="none" opacity=".35"/>
+ <path d="M0 880 Q500 868 900 880 T1600 872" stroke="#fff" stroke-width="3" fill="none" opacity=".2"/>
+ <g id="sandDeco"></g>
+ <rect width="1600" height="900" fill="url(#vig)"/>
+</svg>
+<div id="bubbles"></div>
+
+<div id="game">
+  <svg id="armLayer"></svg>
+  <div class="top">
+    <h1>🐙 Chef Octopus's Ocean Restaurant</h1>
+    <span class="pill" id="orderLbl">ORDER 1 / 16</span>
+    <div class="prog"><b id="bar"></b></div>
+    <span class="pill" id="starLbl">⭐ 0</span>
+    <button class="ib" id="bPause" title="Pause">⏸</button>
+    <button class="ib" id="bRestart" title="Restart">↻</button>
+    <button class="ib" id="soundBtn" title="Sound">🔊</button>
+  </div>
+  <div id="msg"></div>
+  <div class="row">
+    <div id="custWrap">
+      <div id="bubble"><small id="say">Can you help me, please?</small><div id="word" lang="ar" dir="rtl"></div></div>
+      <div id="cust"></div>
+    </div>
+    <div id="octoBox"></div>
+    <div id="potWrap">
+      <div id="dish"></div>
+      <div id="asm"><span id="asmWord" lang="ar" dir="rtl"></span><span id="slots"></span></div>
+      <svg id="pot" viewBox="0 0 240 170">
+        <defs>
+          <linearGradient id="iron" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1c2230"/><stop offset=".3" stop-color="#5a6a86"/><stop offset=".55" stop-color="#2b3448"/><stop offset="1" stop-color="#12161f"/></linearGradient>
+          <radialGradient id="soup" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#f08a24"/></radialGradient>
+        </defs>
+        <ellipse cx="120" cy="160" rx="92" ry="8" fill="#0006"/>
+        <path d="M24 62 H216 C222 130 180 156 120 156 C60 156 18 130 24 62Z" fill="url(#iron)"/>
+        <path d="M44 80C48 112 70 132 110 138" stroke="#fff" stroke-opacity=".25" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M24 70 Q10 70 10 86 Q10 100 26 100M216 70 Q230 70 230 86 Q230 100 214 100" stroke="#12161f" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <ellipse cx="120" cy="60" rx="98" ry="14" fill="#2b3448"/><ellipse cx="120" cy="60" rx="88" ry="10" fill="url(#soup)"/>
+        <circle cx="86" cy="58" r="6" fill="#fff" opacity=".6"/><circle cx="140" cy="56" r="8" fill="#fff" opacity=".5"/><circle cx="168" cy="60" r="5" fill="#fff" opacity=".6"/>
+        <rect x="70" y="150" width="14" height="14" rx="3" fill="#12161f"/><rect x="156" y="150" width="14" height="14" rx="3" fill="#12161f"/>
+      </svg>
+    </div>
+  </div>
+  <div class="shelf"><div id="jars" class="locked"></div></div>
+  <div class="dock">
+    <button class="btn r" id="bBad">✗ WRONG</button>
+    <button class="btn b" id="bNext">NEXT ➜</button>
+    <button class="btn g" id="bOk">✓ CORRECT</button>
+  </div>
+</div>
+
+<div id="start" class="overlay">
+  <div id="startOcto"></div>
+  <h1>CHEF OCTOPUS'S OCEAN RESTAURANT! 🐙</h1>
+  <p>Help Chef Octopus prepare delicious meals!</p>
+  <button class="btn g big" id="bStart">START COOKING!</button>
+</div>
+<div id="final" class="overlay hidden">
+  <div id="finalCust"></div>
+  <h1>AMAZING! YOU HELPED CHEF OCTOPUS! 🐙🎉</h1>
+  <p>You completed all 16 orders!</p>
+  <div id="finalStats"></div>
+  <button class="btn g big" id="bAgain">PLAY AGAIN</button>
+</div>
+
+<script>
+/* ===== The 16 exact words (source of truth) ===== */
+const WORDS=["ذَاتَ","جَوَابَ","نَارُ","عَذابُ","وَنَمَارِقُ","شَدِيدُ","نُرِيدُ","أُحِيطَ","يُجِيبُ","وَسِيقَ","يَتُوبُ","رَسُولُ","مَلَكُوتِ","بِرُوحِ","لُعِنُوا","يَذُوقُونَ"];
+const UNIT=/[\u0621-\u064A][\u064B-\u0652\u0670]*/g;   /* base letter + its harakat */
+const unitsOf=w=>w.match(UNIT);
+WORDS.forEach(w=>{if(unitsOf(w).join('')!==w)console.error('Split mismatch',w)});
+const ALL_UNITS=[...new Set(WORDS.flatMap(unitsOf))];
+const JAR_COLORS=['#ffe27a','#8fe8b0','#ffb0cc','#9fdcff','#d3b8ff','#ffc08a','#b0f4ec','#f3ea8a'];
+const DISHES=['🍤','🍜','🍣','🥘','🍲','🥗','🍕','🧁'];
+
+/* ===== Underwater scene decoration ===== */
+(()=>{
+ const R=document.getElementById('reef');let s='';
+ const br=(x,y,a,l,w,c,d)=>{const x2=x+Math.cos(a)*l,y2=y+Math.sin(a)*l;let o=`<path d="M${x} ${y}L${x2} ${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+  if(d>0){o+=br(x2,y2,a-.45,l*.72,w*.7,c,d-1)+br(x2,y2,a+.4,l*.72,w*.7,c,d-1)}return o};
+ [[90,840,'#ff6f8e',90],[210,850,'#ff9f5a',70],[1380,845,'#e9569a',95],[1500,850,'#ffb347',75],[1290,855,'#ff7a6a',60]].forEach(([x,y,c,l])=>s+=br(x,y,-Math.PI/2,l,14,c,4));
+ [[30,'#2f9e5a',210],[150,'#3fb56a',170],[1440,'#2f9e5a',200],[1560,'#3fb56a',160],[420,'#2a8a55',120],[1130,'#2a8a55',130]].forEach(([x,c,h],i)=>{
+  s+=`<path class="sw" style="animation-delay:${-i}s" d="M${x} 850 q22 -${h/3} 0 -${h/1.5} t0 -${h/1.5} t0 -${h/1.5}" stroke="${c}" stroke-width="12" fill="none" stroke-linecap="round"/>`});
+ s+='<path d="M-20 880 Q60 770 190 820 Q260 850 300 900Z" fill="#3a2f5e"/><path d="M1380 900 Q1440 770 1560 800 Q1640 830 1640 900Z" fill="#3a2f5e"/>';
+ R.innerHTML=s;
+ document.getElementById('sandDeco').innerHTML='<g transform="translate(560 858)"><polygon points="0,-14 4,-4 15,-4 6,3 9,14 0,8 -9,14 -6,3 -15,-4 -4,-4" fill="#ff7a4a"/></g><g transform="translate(1010 868)"><path d="M0 0 q18 -26 36 0z" fill="#f3d7c8"/><path d="M18 -2V-18M8 -2L12 -14M28 -2L24 -14" stroke="#c9a08a" stroke-width="2"/></g>';
+})();
+
+/* ===== Customers: shaded sea creatures ===== */
+const CUSTOMERS=[
+ ['fish','#ff7a1a','#e85d0a'],['crab','#e8452c','#b02a1a'],['turtle','#8fd08a','#3f8f4f'],['seahorse','#ffc83a','#e08a1a'],
+ ['star','#ff7a4a','#c9421a'],['shark','#6f8fb0','#46688a'],['jelly','#e08fff','#b050e0'],['puffer','#e8c85a','#b8902a'],
+ ['fish','#2f8bff','#ffd23a'],['crab','#ff8a3a','#c9561a'],['turtle','#c4d870','#6a8f2a'],['seahorse','#ff8fb0','#d94f80'],
+ ['star','#ffcf5a','#d9902a'],['shark','#8a8fc0','#5a5f95'],['jelly','#7fe8e0','#30b8c8'],['puffer','#f0a080','#c06040']];
+let uid=0;
+const E=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r+2}" fill="#fff"/><circle cx="${x}" cy="${y}" r="${r}" fill="#222"/><circle cx="${x-r*.3}" cy="${y-r*.35}" r="${r*.38}" fill="#fff"/>`;
+const sm=(x,y)=>`<path d="M${x-8} ${y}q8 8 16 0" stroke="#3a1a10" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+function custSVG([t,a,b]){
+ const n='c'+(uid++);
+ const H=`<linearGradient id="${n}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".32"/></linearGradient>`;
+ const P=(d,f,x='')=>`<path d="${d}" fill="${f}" ${x}/><path d="${d}" fill="url(#${n}h)"/>`;
+ const body='M18 55C18 28 62 18 96 34C108 40 116 49 116 55C116 61 108 70 96 76C62 92 18 82 18 55Z';
+ const S={
+ fish:`<clipPath id="${n}c"><path d="${body}"/></clipPath>${P('M112 55L146 28C150 45 150 65 146 82Z',b)}${P('M40 28C60 6 90 12 100 32Z',b)}${P(body,a)}<g clip-path="url(#${n}c)"><path d="M54 18C62 40 62 70 54 92L66 94C74 70 74 40 66 16Z" fill="#fff" stroke="#222" stroke-width="2.5"/><path d="M92 26C98 42 98 68 92 82L102 80C108 66 108 42 102 28Z" fill="#fff" stroke="#222" stroke-width="2.5"/></g><path d="${body}" fill="url(#${n}h)"/>${E(34,48,7)}<path d="M24 64q8 6 16 2" stroke="#7a2a10" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+ crab:`<path d="M34 70L12 84M40 78L24 98M116 70L138 84M110 78L126 98" stroke="${b}" stroke-width="6" stroke-linecap="round"/><path d="M34 54L22 38M116 54L128 38" stroke="${b}" stroke-width="7"/>${P('M14 34C4 22 16 8 28 14C34 20 30 30 24 38Z',b)}${P('M136 34C146 22 134 8 122 14C116 20 120 30 126 38Z',b)}${P('M25 72C25 46 125 46 125 72C125 92 25 92 25 72Z',a)}<path d="M62 52V36M88 52V36" stroke="${b}" stroke-width="4"/>${E(62,32,7)}${E(88,32,7)}${sm(75,72)}`,
+ turtle:`${P('M40 84C30 100 40 106 54 98Z',a)}${P('M112 84L126 102L100 100Z',a)}${P('M12 55a20 18 0 1 0 40 0a20 18 0 1 0-40 0',a)}${P('M44 82C44 30 126 26 136 82Z',b)}<path d="M60 78C62 58 76 46 90 44M92 80C92 58 102 46 116 46M72 54L100 54L104 68L68 68Z" stroke="#0005" stroke-width="3" fill="none"/><path d="M40 84H140" stroke="#e8d9a0" stroke-width="8" stroke-linecap="round"/>${E(26,50,6)}${sm(30,66)}`,
+ seahorse:`${P('M82 30C108 26 114 54 100 70C90 82 96 96 82 100C66 104 58 90 70 82C80 76 78 64 70 54C62 44 68 32 82 30Z',a)}${P('M100 50C118 46 122 66 104 70Z',b)}${P('M46 34a20 20 0 1 0 40 0a20 20 0 1 0-40 0',a)}${P('M48 38L22 42L26 50L50 48Z',a)}<path d="M56 16L52 4M66 14L66 2M76 16L82 4" stroke="${b}" stroke-width="4" stroke-linecap="round"/><path d="M72 56H88M74 66H92M76 76H90" stroke="${b}" stroke-width="3" opacity=".7"/><path d="M84 100C100 104 108 92 98 88" stroke="${a}" stroke-width="8" fill="none" stroke-linecap="round"/>${E(58,30,6)}`,
+ star:`${P('M75 6L92 40L130 45L102 71L110 106L75 88L40 106L48 71L20 45L58 40Z',a,`stroke="${b}" stroke-width="4" stroke-linejoin="round"`)}<g fill="${b}" opacity=".6"><circle cx="75" cy="20" r="3"/><circle cx="120" cy="48" r="3"/><circle cx="30" cy="48" r="3"/><circle cx="100" cy="96" r="3"/><circle cx="50" cy="96" r="3"/></g>${E(64,52,6)}${E(86,52,6)}${sm(75,68)}`,
+ shark:`${P('M112 56L146 28L138 56L146 84Z',a)}${P('M58 30L74 4L90 30Z',a)}${P('M10 58C10 34 70 24 112 44C124 50 124 62 112 68C70 86 10 82 10 58Z',a)}<path d="M16 62C40 78 90 80 114 64C100 78 40 90 16 62Z" fill="#fff" opacity=".9"/><path d="M60 44q-4 10 0 20M68 44q-4 10 0 20" stroke="#0004" stroke-width="2" fill="none"/>${E(34,50,6)}<path d="M16 62Q34 72 56 66" stroke="#222" stroke-width="2.5" fill="none"/><path d="M24 65l3 5 3-4 4 5 3-5" fill="#fff"/>`,
+ jelly:`${P('M24 62C24 12 126 12 126 62C100 70 50 70 24 62Z',a,'opacity=".88"')}<ellipse cx="75" cy="30" rx="30" ry="12" fill="#fff" opacity=".35"/><path d="M38 66Q30 82 42 92T40 108M58 68Q50 86 62 96T58 110M80 68Q72 86 84 96T80 110M100 68Q94 84 106 94T102 108M114 66Q108 80 118 90" stroke="${b}" stroke-width="5" fill="none" stroke-linecap="round" opacity=".85"/>${E(60,44,6)}${E(90,44,6)}${sm(75,58)}`,
+ puffer:`<g stroke="${b}" stroke-width="4" stroke-linecap="round"><path d="M75 12V2M40 24L32 16M110 24L118 16M24 48H14M126 48H136M34 82L26 90M116 82L124 90M75 98V108"/></g>${P('M118 58L142 44L142 72Z',b)}${P('M29 58a46 46 0 1 0 92 0a46 46 0 1 0-92 0',a)}<ellipse cx="75" cy="84" rx="30" ry="14" fill="#fff" opacity=".4"/><g fill="${b}" opacity=".6"><circle cx="92" cy="34" r="3"/><circle cx="104" cy="52" r="3"/><circle cx="60" cy="30" r="3"/></g>${E(54,48,9)}${E(94,48,9)}<ellipse cx="74" cy="72" rx="6" ry="5" fill="#a33"/>`};
+ return `<svg viewBox="0 0 150 110" xmlns="http://www.w3.org/2000/svg"><defs>${H}</defs>${S[t]}</svg>`;
+}
+
+/* ===== Realistic chef octopus: tapered arms with suckers, shaded skin ===== */
+function armSVG(i,ry){
+ const rx=122+i*11,k=i-3.5,y0=ry;
+ const p=[[rx,y0],[rx+k*9,y0+50],[rx+k*30+(i%2?20:-20),y0+82],[rx+k*40+(i%2?-16:16),y0+(i%3?100:112)]];
+ const pts=[],N=16;
+ for(let j=0;j<=N;j++){const t=j/N,u=1-t;
+  pts.push([u*u*u*p[0][0]+3*u*u*t*p[1][0]+3*u*t*t*p[2][0]+t*t*t*p[3][0],u*u*u*p[0][1]+3*u*u*t*p[1][1]+3*u*t*t*p[2][1]+t*t*t*p[3][1]])}
+ const L=[],Rr=[];let sk='';
+ pts.forEach((q,j)=>{const a=pts[Math.max(j-1,0)],b=pts[Math.min(j+1,N)],dx=b[0]-a[0],dy=b[1]-a[1],m=Math.hypot(dx,dy)||1,nx=-dy/m,ny=dx/m,w=15*Math.pow(1-j/N,.8)+2.5;
+  L.push([q[0]+nx*w,q[1]+ny*w]);Rr.push([q[0]-nx*w,q[1]-ny*w]);
+  if(j>2&&j<N-1&&j%2)sk+=`<circle cx="${(q[0]+nx*w*.3).toFixed(1)}" cy="${(q[1]+ny*w*.3).toFixed(1)}" r="${(w*.3).toFixed(1)}" fill="#f7cdb8" opacity=".85"/>`});
+ const poly=[...L,...Rr.reverse()].map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ');
+ return `<g class="arm" style="transform-origin:${rx}px ${y0}px;animation-delay:${-i*.35}s"><polygon points="${poly}" fill="url(#skin%ID%)"/>${sk}</g>`;
+}
+function octoSVG(id){
+ let arms='';for(let i=0;i<8;i++)arms+=armSVG(i,185);
+ let spots='';[[110,90,5],[205,80,4],[140,60,6],[185,118,3],[95,135,4],[220,130,3],[160,100,3]].forEach(([x,y,r])=>spots+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#7a2020" opacity=".25"/>`);
+ const eye=(cx)=>`<ellipse cx="${cx}" cy="118" rx="21" ry="22" fill="#fff"/><g class="eye"><circle cx="${cx}" cy="118" r="14" fill="url(#iris%ID%)"/><ellipse class="pup" cx="${cx}" cy="118" rx="10" ry="4.5" fill="#111"/><circle cx="${cx+4}" cy="112" r="4" fill="#fff"/></g><path d="M${cx-22} 112Q${cx} 92 ${cx+22} 112" fill="#d8503a" opacity=".95"/>`;
+ return `<svg id="${id}" viewBox="0 -20 320 330" xmlns="http://www.w3.org/2000/svg"><defs>
+ <radialGradient id="skin%ID%" cx=".4" cy=".25" r=".9"><stop offset="0" stop-color="#ff9d78"/><stop offset=".5" stop-color="#e0553c"/><stop offset="1" stop-color="#8f2a2a"/></radialGradient>
+ <radialGradient id="iris%ID%"><stop offset="0" stop-color="#ffd24a"/><stop offset="1" stop-color="#c27a10"/></radialGradient>
+ <linearGradient id="hat%ID%" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e8eef5"/><stop offset=".5" stop-color="#fff"/><stop offset="1" stop-color="#cfd8e4"/></linearGradient></defs>
+ ${arms}
+ <ellipse cx="160" cy="118" rx="82" ry="82" fill="url(#skin%ID%)"/>${spots}
+ <ellipse cx="135" cy="70" rx="28" ry="14" fill="#fff" opacity=".28" transform="rotate(-20 135 70)"/>
+ <rect x="108" y="26" width="104" height="34" rx="6" fill="url(#hat%ID%)"/><circle cx="118" cy="20" r="22" fill="url(#hat%ID%)"/><circle cx="160" cy="6" r="26" fill="url(#hat%ID%)"/><circle cx="202" cy="20" r="22" fill="url(#hat%ID%)"/>
+ <rect x="108" y="50" width="104" height="10" fill="#ffd25a"/>
+ ${eye(122)}${eye(198)}
+ <path class="brow" d="M98 100L142 86M178 86L222 100" stroke="#4a1414" stroke-width="6" stroke-linecap="round" fill="none"/>
+ <path class="tear" d="M104 140q-6 10 0 14q6-4 0-14Z" fill="#7fd6ff"/><path class="tear" d="M216 140q-6 10 0 14q6-4 0-14Z" fill="#7fd6ff" style="animation-delay:.4s"/>
+ <ellipse cx="96" cy="145" rx="12" ry="7" fill="#ff8fa0" opacity=".6"/><ellipse cx="224" cy="145" rx="12" ry="7" fill="#ff8fa0" opacity=".6"/>
+ <path class="mouth" d="M140 158 Q160 176 180 158" stroke="#4a1414" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`.replace(/%ID%/g,id);
+}
+document.getElementById('octoBox').innerHTML=octoSVG('octo');
+document.getElementById('startOcto').innerHTML=octoSVG('octo2');
+const MOUTH={smile:['M140 158 Q160 176 180 158','none'],oh:['M152 162 Q160 150 168 162 Q160 180 152 162Z','#4a1414'],big:['M136 156 Q160 196 184 156Z','#4a1414'],sad:['M138 174 Q160 150 182 174','none']};
+let faceT;
+function face(kind,ms=1100){
+ const m=document.querySelector('#octo .mouth');m.setAttribute('d',MOUTH[kind][0]);m.style.fill=MOUTH[kind][1];
+ $('octo').classList.toggle('oh',kind==='oh');$('octo').classList.toggle('sad',kind==='sad');
+ clearTimeout(faceT);if(kind!=='smile')faceT=setTimeout(()=>face('smile'),ms);
+}
+
+/* ===== Sound (gentle, optional, no music) ===== */
+let soundOn=true,AC;
+function tone(f,d=.15,type='sine',v=.07,t0=0,slide=0){
+ if(!soundOn)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+ const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+t0;o.type=type;o.frequency.setValueAtTime(f,t);
+ if(slide)o.frequency.exponentialRampToValueAtTime(f*slide,t+d);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+ o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}
+}
+const SND={bubble:()=>{tone(500,.12,'sine',.06,0,1.8);tone(700,.1,'sine',.05,.08,1.6)},pick:()=>tone(660,.12,'triangle',.07),puff:()=>tone(220,.3,'sawtooth',.03,0,.6),
+ sad:()=>[392,330,262].forEach((f,i)=>tone(f,.28,'triangle',.06,i*.2)),
+ cheer:()=>[523,659,784].forEach((f,i)=>tone(f,.2,'triangle',.07,i*.12)),done:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.07,i*.12)),
+ final:()=>[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,.25,'triangle',.07,i*.14))};
+
+/* ===== State ===== */
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let S;
+function newGame(){S={queue:shuffle(WORDS.map((_,i)=>i)),cur:null,units:[],placed:[],phase:'idle',paused:false,busy:false,st:{rok:0,rbad:0,lok:0,lbad:0},done:new Set()}}
+newGame();
+const setMsg=t=>$('msg').textContent=t;
+
+function showOrder(){
+ S.cur=S.queue[0];S.units=unitsOf(WORDS[S.cur]);S.placed=[];S.phase='read';
+ $('word').textContent=WORDS[S.cur];
+ const c=$('cust');c.innerHTML=custSVG(CUSTOMERS[S.cur]);c.classList.remove('happy');c.classList.add('arrive');setTimeout(()=>c.classList.remove('arrive'),850);
+ $('say').textContent='Can you help me, please?';$('asmWord').textContent='';$('dish').style.opacity=0;
+ buildJars();setMsg('Read the word out loud! 📖');SND.bubble();render();
+}
+function buildJars(){
+ const need=[...new Set(S.units)];
+ const extra=shuffle(ALL_UNITS.filter(u=>!need.includes(u))).slice(0,Math.max(3,6-need.length));
+ const box=$('jars');box.innerHTML='';
+ shuffle([...need,...extra]).forEach((u,i)=>{
+  const b=document.createElement('button');b.className='jar';b.dataset.u=u;b.setAttribute('aria-label','letter');
+  b.style.background=`linear-gradient(135deg,#fff8,${JAR_COLORS[i%8]} 40%,${JAR_COLORS[i%8]})`;
+  b.innerHTML=`<span lang="ar">${u}</span>`;b.onclick=()=>pick(b);box.appendChild(b);
+ });
+}
+function render(){
+ const done=S.done.size,p=S.phase,play=p!=='idle'&&p!=='final',act=!S.paused&&!S.busy;
+ $('orderLbl').textContent=`ORDER ${Math.min(done+(p==='done'?0:1),16)} / 16`;
+ $('bar').style.width=done/16*100+'%';$('starLbl').textContent='⭐ '+Math.floor(done/5);
+ /* CORRECT / WRONG only judge the READING step; letters are checked automatically */
+ $('bOk').disabled=!(act&&p==='read');
+ $('bBad').disabled=$('bOk').disabled;
+ $('bNext').disabled=!(act&&['read','cook','done'].includes(p));
+ $('bNext').classList.toggle('attn',p==='done');
+ $('bNext').textContent=p==='done'?'NEXT ORDER ➜':'SKIP ➜';
+ $('bPause').disabled=!play;$('bPause').textContent=S.paused?'▶':'⏸';
+ $('jars').classList.toggle('locked',!(p==='cook'&&!S.paused));
+ $('asmWord').textContent=S.placed.join('');
+ $('slots').textContent=(p==='cook'||p==='done')?'○'.repeat(Math.max(S.units.length-S.placed.length,0)):'';
+}
+
+/* ===== Controls ===== */
+let cool=false;
+const guard=fn=>()=>{if(cool||S.busy)return;cool=true;setTimeout(()=>cool=false,350);fn()};
+function armed(btn,label,fn){let t,orig=btn.textContent;
+ btn.onclick=()=>{if(btn.dataset.a){clearTimeout(t);delete btn.dataset.a;btn.classList.remove('arm');btn.textContent=orig;fn();return}
+  if(btn.id==='bNext'&&S.phase==='done'){fn();return}
+  btn.dataset.a=1;btn.classList.add('arm');const o=btn.textContent;btn.textContent=label;
+  t=setTimeout(()=>{delete btn.dataset.a;btn.classList.remove('arm');btn.textContent=o;render()},2500)}}
+$('bStart').onclick=()=>{$('start').classList.add('hidden');showOrder()};
+$('bOk').onclick=guard(()=>judge(true));
+$('bBad').onclick=guard(()=>judge(false));
+function judge(ok){
+ if(S.paused||S.phase!=='read')return;
+ if(ok){S.st.rok++;S.phase='cook';setMsg('Great reading! Now tap the right letters! 🧂');SND.cheer();face('big')}
+ else{S.st.rbad++;setMsg('Good try! Read it again! 💪')}
+ render();
+}
+$('bPause').onclick=guard(()=>{S.paused=!S.paused;setMsg(S.paused?'Paused ⏸':'Back to cooking! 🍳');render()});
+armed($('bNext'),'TAP AGAIN TO SKIP',()=>guard(nextOrder)());
+$('bRestart').onclick=(()=>{let t;return()=>{const b=$('bRestart');if(b.dataset.a){clearTimeout(t);delete b.dataset.a;b.classList.remove('arm');return fullReset()}
+ b.dataset.a=1;b.classList.add('arm');setMsg('Tap ↻ again to restart');t=setTimeout(()=>{delete b.dataset.a;b.classList.remove('arm');setMsg('')},2500)}})();
+function nextOrder(){
+ if(!['read','cook','done'].includes(S.phase))return;
+ const id=S.queue.shift();if(!S.done.has(id))S.queue.push(id);   /* skipped = not completed, comes back */
+ if(S.done.size===16||!S.queue.length)return finish();
+ showOrder();
+}
+function fullReset(){newGame();$('final').classList.add('hidden');$('octo').classList.remove('dance','sad');$('cust').innerHTML='';$('word').textContent='';$('jars').innerHTML='';setMsg('');render();showOrder()}
+$('bAgain').onclick=fullReset;
+$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇'};
+
+/* ===== Cooking animation ===== */
+const NS='http://www.w3.org/2000/svg';
+const pt=(el,k,fy=.5)=>{const r=el.getBoundingClientRect();return[r.left-k.left+r.width/2,r.top-k.top+r.height*fy]};
+function armPath(d){const p=document.createElementNS(NS,'path');p.setAttribute('d',d);p.setAttribute('stroke','#d4492f');p.setAttribute('stroke-width','18');p.setAttribute('stroke-linecap','round');p.setAttribute('fill','none');$('armLayer').appendChild(p);return p}
+function reach(jar,u){return new Promise(res=>{
+ const g=$('game'),k=g.getBoundingClientRect();
+ const [ox,oy]=pt($('octo'),k,.62),[jx,jy]=pt(jar,k,.3),[px,py]=pt($('pot'),k,.3);
+ const a=armPath(`M${ox} ${oy} Q${(ox+jx)/2-50} ${(oy+jy)/2+40} ${jx} ${jy}`),l1=a.getTotalLength();a.style.strokeDasharray=l1;
+ a.animate([{strokeDashoffset:l1},{strokeDashoffset:0}],{duration:260,fill:'forwards',easing:'ease-out'}).onfinish=()=>{
+  const f=document.createElement('div');f.className='fly';f.textContent=u;f.style.left=jx-29+'px';f.style.top=jy-32+'px';g.appendChild(f);
+  const b=armPath(`M${ox} ${oy} Q${(ox+px)/2} ${Math.min(oy,py)-70} ${px} ${py}`),l2=b.getTotalLength();b.style.strokeDasharray=l2;a.remove();
+  b.animate([{strokeDashoffset:l2},{strokeDashoffset:0}],{duration:380,fill:'forwards'});
+  f.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${px-jx}px,${py-jy-30}px) scale(.5)`,opacity:.9}],{duration:380,easing:'ease-in-out',fill:'forwards'}).onfinish=()=>{f.remove();b.remove();res([px,py])}}})}
+function bubbles(x,y,n=8){const g=$('game');for(let i=0;i<n;i++){const b=document.createElement('i');b.className='bub';const s=8+Math.random()*16;
+ Object.assign(b.style,{width:s+'px',height:s+'px',left:x+(Math.random()*70-35)+'px',top:y+Math.random()*20+'px',animationDelay:Math.random()*.3+'s',background:['#ffffff66','#ffd25a99','#7be0a3aa','#ff9fc2aa'][i%4]});g.appendChild(b);setTimeout(()=>b.remove(),1500)}}
+
+/* Student taps a jar -> the octopus picks it immediately and the game checks it automatically */
+function pick(jar){
+ if(S.phase!=='cook'||S.paused||S.busy)return;
+ SND.pick();
+ if(jar.dataset.u===S.units[S.placed.length])acceptLetter(jar);else wrongLetter(jar);
+}
+async function acceptLetter(jar){
+ S.busy=true;render();
+ const [px,py]=await reach(jar,jar.dataset.u);
+ S.placed.push(jar.dataset.u);S.st.lok++;jar.classList.remove('sel');
+ $('pot').classList.add('glow');setTimeout(()=>$('pot').classList.remove('glow'),600);
+ bubbles(px,py);SND.bubble();face('big',700);setMsg('Yes! Great letter! ✨');
+ S.busy=false;
+ if(S.placed.length===S.units.length)await complete();
+ render();
+}
+async function wrongLetter(jar){
+ S.busy=true;S.st.lbad++;render();
+ const [px,py0]=await reach(jar,jar.dataset.u);          /* octopus grabs the wrong letter... */
+ SND.puff();SND.sad();face('sad',1900);                    /* ...and gets sad */
+ const k=$('game').getBoundingClientRect(),[sx,sy]=pt($('pot'),k,.1);
+ const s=document.createElement('div');s.className='steam';s.textContent='💨';s.style.left=sx-20+'px';s.style.top=sy+'px';$('game').appendChild(s);setTimeout(()=>s.remove(),1000);
+ $('octoBox').classList.add('shake');setTimeout(()=>$('octoBox').classList.remove('shake'),450);
+ jar.classList.add('wob');setTimeout(()=>jar.classList.remove('wob'),500);
+ setMsg(['Oh no! Wrong letter! 😢 Try again!','Oops! Chef Octopus is sad. Try again! 😢','Not that one 😢 You can do it!'][S.st.lbad%3]);
+ await new Promise(r=>setTimeout(r,1000));S.busy=false;render();
+}
+async function complete(){
+ S.phase='done';S.busy=true;S.done.add(S.cur);
+ setMsg(['DELICIOUS! GREAT JOB! 🎉','YOU DID IT! 🌟'][S.done.size%2]);
+ $('asmWord').textContent=WORDS[S.cur];$('pot').classList.add('glow');$('octo').classList.add('dance');face('big',2200);SND.done();render();
+ const g=$('game'),k=g.getBoundingClientRect(),dish=$('dish'),[dx,dy]=pt($('pot'),k,.1);
+ dish.textContent=DISHES[S.cur%8];dish.style.left=dx-32+'px';dish.style.top=dy-60+'px';dish.style.opacity=1;
+ dish.animate([{transform:'translateY(30px) scale(.3)',opacity:0},{transform:'translateY(0) scale(1.2)',opacity:1}],{duration:500});
+ bubbles(dx,dy,14);await new Promise(r=>setTimeout(r,900));
+ const [cx,cy]=pt($('cust'),k,.4);
+ dish.animate([{transform:'translate(0,0) scale(1.2)'},{transform:`translate(${cx-dx}px,${cy-dy+40}px) scale(.8)`}],{duration:700,easing:'ease-in-out',fill:'forwards'});
+ await new Promise(r=>setTimeout(r,700));
+ $('say').textContent='Yummy! Thank you! 😋';$('cust').classList.add('happy');SND.cheer();confetti(14);
+ setTimeout(()=>{$('cust').classList.remove('happy');$('octo').classList.remove('dance');$('pot').classList.remove('glow')},2200);
+ S.busy=false;if(S.done.size===16)setMsg('All orders done! Press NEXT ORDER 🎉');render();
+}
+function confetti(n){const cols=['#ff6f61','#ffd25a','#2ad4d0','#c9a6ff','#7be0a3','#ff9fc2'];
+ for(let i=0;i<n;i++){const c=document.createElement('i');c.className='conf';
+  Object.assign(c.style,{left:Math.random()*100+'vw',background:cols[i%6],animationDuration:2+Math.random()*2+'s',animationDelay:Math.random()*.5+'s'});document.body.appendChild(c);setTimeout(()=>c.remove(),4600)}}
+function finish(){
+ S.phase='final';render();$('finalCust').innerHTML=CUSTOMERS.map(custSVG).join('');const s=S.st;
+ $('finalStats').innerHTML=[['Completed','16 / 16'],['Correct readings',s.rok],['Reading retries',s.rbad],['Correct letters',s.lok],['Wrong letters',s.lbad],['Stars','⭐ 3']]
+  .map(([a,b])=>`<span>${a}: <b style="color:#ffd25a">${b}</b></span>`).join('');
+ $('final').classList.remove('hidden');SND.final();confetti(60);setTimeout(()=>confetti(50),1500);
+}
+(()=>{const b=$('bubbles');for(let i=0;i<24;i++){const e=document.createElement('i'),s=6+Math.random()*24;
+ Object.assign(e.style,{width:s+'px',height:s+'px',left:Math.random()*100+'%',animationDuration:8+Math.random()*12+'s',animationDelay:-Math.random()*14+'s'});b.appendChild(e)}})();
+render();
+</script>
+</body>
+</html>
